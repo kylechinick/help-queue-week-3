@@ -4,6 +4,7 @@ import TicketList from './TicketList';
 import EditTicketForm from './EditTicketForm';
 import TicketDetail from './TicketDetail';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 class TicketControl extends React.Component {
   constructor(props) {
@@ -33,9 +34,9 @@ class TicketControl extends React.Component {
   handleDeletingTicket = id => {
     const { dispatch } = this.props;
     const action = {
-      type: "DELETE_TICKET",
+      type: 'DELETE_TICKET',
       id: id
-    }
+    };
     dispatch(action);
     this.setState({
       selectedTicket: null
@@ -54,16 +55,16 @@ class TicketControl extends React.Component {
       id: id,
       names: names,
       location: location,
-      issue: issue,
-    }
-    dispatch(action); 
+      issue: issue
+    };
+    dispatch(action);
     this.setState({
       editing: false,
       selectedTicket: null
     });
   };
 
-  handleAddingNewTicketToList = (newTicket) => {
+  handleAddingNewTicketToList = newTicket => {
     const { dispatch } = this.props;
     const { id, names, location, issue } = newTicket;
     const action = {
@@ -71,16 +72,14 @@ class TicketControl extends React.Component {
       id: id,
       names: names,
       location: location,
-      issue: issue,
-    }
+      issue: issue
+    };
     dispatch(action);
-    this.setState({formVisibleOnPage: false});
+    this.setState({ formVisibleOnPage: false });
   };
 
   handleChangingSelectedTicket = id => {
-    const selectedTicket = this.state.mainTicketList.filter(
-      ticket => ticket.id === id
-    )[0];
+    const selectedTicket = this.props.mainTicketList[id];
     this.setState({ selectedTicket: selectedTicket });
   };
 
@@ -113,7 +112,7 @@ class TicketControl extends React.Component {
       currentlyVisibleState = (
         <TicketList
           onTicketSelection={this.handleChangingSelectedTicket}
-          ticketList={this.state.mainTicketList}
+          ticketList={this.props.mainTicketList}
         />
       );
       buttonText = 'Add Ticket';
@@ -127,6 +126,16 @@ class TicketControl extends React.Component {
   }
 }
 
-TicketControl = connect()(TicketControl);
+TicketControl.propTypes = {
+  mainTicketList: PropTypes.object
+};
+
+const mapStateToProps = state => {
+  return {
+    mainTicketList: state
+  };
+};
+
+TicketControl = connect(mapStateToProps)(TicketControl);
 
 export default TicketControl;
